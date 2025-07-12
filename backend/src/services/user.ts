@@ -17,19 +17,18 @@ async function validateUser(userName: string, password: string){
     }
 
     const sessionId = uuidv4();
-    return sessionId;
+    return {session: sessionId,  user: {name: user.name, email: user.email, candidateType: user.candidateType}};
 }
 
-async function createUser(name: string, userName: string, password: string, address: string){
+async function createUser(name: string, email: string, password: string, candidateType: string){
     const userId = uuidv4();
     const salt =await bcrypt.genSalt(HASHING_ROUNDS);
     const hashedPassword = await bcrypt.hash(password, salt);
-    console.log(hashedPassword, "OASseds")
 
-    await UserInfo.createUser({userName,
+    await UserInfo.createUser({email,
         password: hashedPassword,
         name,
-        address,
+        candidateType,
         userId,
     })
     const sessionId = uuidv4();

@@ -3,3 +3,7 @@
 .root{
   background-color: black;
 }
+
+@theme {
+  --font-display: "serif, sans";
+}

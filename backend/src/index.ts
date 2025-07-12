@@ -1,15 +1,16 @@
 import bodyParser from 'body-parser';
+import cors from "cors";
 import 'dotenv/config';
 import express from 'express';
 import session from 'express-session';
 import { Database } from './models';
 import ssoRouter from "./routes/ssoRouter";
 
-
 const app = express();
 
 Database.init();
 
+app.use(cors())
 app.use(bodyParser.json({}));
 app.use(session({
     secret: process.env.SESSION_PASSWORD as string,

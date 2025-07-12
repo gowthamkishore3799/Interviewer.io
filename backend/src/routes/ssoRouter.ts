@@ -5,20 +5,27 @@ const router = express.Router();
 
 router.post("/login", async (req, res)=>{
     try{
-        let {userName, password} = req.body;
 
-        if(!userName || !password){
-            throw({message: "UserName or Password missing", userName, password});
+        let {email, password} = req.body;
+
+        console.log(email, password)
+
+        
+        if(!email || !password){
+            throw({message: "Email or Password missing", email, password});
         }
-        const session = await validateUser(userName, password);
+        const {session, user } = await validateUser(email, password);
         res.cookie('session', session);
         return res.status(200).send({
-            message: "User verified successfully"
+            message: "User verified successfully",
+            success: true,
+            user 
         })
     }catch(e){
         console.log(e, 'Error in Finding User.')
         return res.status(400).send({
-            message: "User not found"
+            message: "User not found",
+            success: false
         })
     }
 })
@@ -27,21 +34,26 @@ router.post("/sign-up", async(req, res)=>{
 
 
     try{
-        let {name, userName, password, address} = req.body;
+        let {name, email, password, candidateType} = req.body;
 
-        if(!name || !userName || !password || !address){
+        if(!name || !email || !password || !candidateType){
             throw new Error("Mandatory details missing")
         }
 
-        const response = await createUser(name, userName, password, address);
+        const response = await createUser(name, email, password, candidateType);
 
+        if(!response){
+            throw new Error("Error in creating user")
+        }
         return res.status(200).send({
-            message: "User Created Successfully"
+            message: "User Created Successfully",
+            success: true
         })
     } catch(e){
         console.log(e, 'Error in Creating User.')
         return res.status(400).send({
-            message: "Failed to create user"
+            message: "Failed to create user",
+            success: false,
         })
     }
 })

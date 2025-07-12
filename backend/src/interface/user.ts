@@ -1,8 +1,8 @@
 
 export interface UserData {
-    userName: string;
+    email: string;
     password: string;
     name: string;
-    address: string;
+    candidateType: string;
     userId: string
 }

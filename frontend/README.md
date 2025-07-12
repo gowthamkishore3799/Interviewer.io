@@ -67,3 +67,7 @@ export default tseslint.config([
   },
 ])
 ```
+
+
+To change type in home page
+loading screen

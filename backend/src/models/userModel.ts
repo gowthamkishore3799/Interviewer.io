@@ -9,10 +9,10 @@ export class UserInfo {
 
         const schema = new Schema<UserData>(
             {
-                userName: { type: String, required: true, unique: true },
+                email: { type: String, required: true, unique: true },
                 password: { type: String, required: true },
                 name: {type: String, required: true},
-                address: {type: String, required: true},
+                candidateType: {type: String, required: true},
                 userId: {type: String, required: true}
             },
             { timestamps: true }
@@ -21,16 +21,16 @@ export class UserInfo {
         this.model = mongoose.model<UserData>('User', schema);
     }
 
-    public static async findUser(userName: string){
-        const user = await UserInfo.model.findOne({userName}).lean()
+    public static async findUser(email: string){
+        const user = await UserInfo.model.findOne({email}).select({name: 1, candidateType:1, email: 1, password: 1}).lean()
         return user;
     }
 
 
-    public static async createUser({userName, password, name, userId, address}: UserData){
+    public static async createUser({email, password, name, userId, candidateType}: UserData){
         const User = UserInfo.model;
 
-        let user = new User({userName, password, name, userId, address});
+        let user = new User({email, password, name, userId, candidateType});
         await user.save()
     }
 }

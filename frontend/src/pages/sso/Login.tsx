@@ -1,24 +1,47 @@
 import { Button, Form, Input } from "antd";
+import { useState } from "react";
+import { useNavigate } from "react-router";
+import { login } from "../../api/sso";
+import ErrorBoundary from "../../components/errorBoundary";
+import { userDetailsKey } from "../../constants";
 
+interface UserDetails{
+  email: string;
+  password: string
+}
 
 export default function LoginPage(){
     const [form] = Form.useForm();
+    const nav = useNavigate();
 
-    // handleSubmit
+
+async function loginUser(userDetails: UserDetails) {
+  try {
+    const { email, password } = userDetails;
+    const response = await login(email, password);
+    const res = await response.json();
+
+
+    if (!res.success) {
+      setErrorMessage(res.message);
+      return;
+    }
+    sessionStorage.setItem(userDetailsKey, JSON.stringify(res.user));
+    nav("/", { replace: true });
+  } catch (e) {
+    setErrorMessage("User not found");
+  }
+}
+
+
+    const [errorMessage, setErrorMessage]= useState("");
+
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
-        <div className="w-full max-w-md bg-white p-8 rounded-2xl shadow-xl z-2">
-          <div className="flex flex-col items-center gap-4 m-8">
-            <h1 className="text-2xl font-bold text-blue-900 tracking-wide">
-              Interviewer.io
-            </h1>
-            <p className="text-sm text-gray-500">
-              AI-Powered Interviewing Assistant
-            </p>
-          </div>
+       <div>
           <div className="flex flex-col">
             <Form name="login" labelCol={{ span: 6 }} wrapperCol={{span: "auto"}} form={form} onSubmitCapture={(e)=>{
                 const result = form.getFieldsValue();
+                console.log(result, "REsult")
             }}>
               <Form.Item
                 label="Email"
@@ -52,15 +75,16 @@ export default function LoginPage(){
               >
                 <Input.Password />
               </Form.Item>
+              {errorMessage ? <ErrorBoundary message={errorMessage} /> : ("")}
               <Form.Item label={null}>
                 <div className="flex gap-5">
                 <Button type="primary" htmlType="submit" onClick={()=>{
-                    console.log("submit..asdasds")
+                    loginUser(form.getFieldsValue())
                 }}>
                   Submit
                 </Button>
                 <Button type="default" htmlType="button" onClick={(e)=>{
-                    console.log("Default..")
+                    nav("/sign-up", {replace: true})
                 }}>
                   Sign Up
                 </Button>
@@ -68,7 +92,6 @@ export default function LoginPage(){
               </Form.Item>
             </Form>
           </div>
-        </div>
-      </div>
+          </div>
     );
 }
