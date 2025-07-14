@@ -2,14 +2,7 @@ import { Button, Form, Input, Radio, message } from "antd";
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { signUp } from "../../api/sso";
-
-interface User{
-    name: string,
-    userName: string,
-    password: string,
-    confirmPassword: string,
-    candidateType: string,
-}
+import type { UserSignIn } from "../../interface/user.types";
 
 export function SignInPage(){
     const [form] = Form.useForm();
@@ -17,9 +10,9 @@ export function SignInPage(){
     const [userType, setUserType] = useState("candidate")
     const [messageApi, contextHolder] = message.useMessage();
 
-    async function createUser(formValues: User){
+    async function createUser(formValues: UserSignIn){
         try {
-            const { userName, password, candidateType, name } = formValues;
+            const { email, password, candidateType, name } = formValues;
 
 
             messageApi.open({
@@ -27,7 +20,7 @@ export function SignInPage(){
                 content: 'Action in progress..',
                 duration: 0,
              });
-            const response = await signUp(name, userName, password, candidateType);
+            const response = await signUp(name, email, password, candidateType);
             const res = await response.json();
         
 
@@ -102,7 +95,6 @@ export function SignInPage(){
             label={"Confirm Password"}
             rules={[
               { required: true, message: "Please enter your password" },
-              {min: 8, message: "Please enter password more than 8 characters"},
               ({ getFieldValue }) => ({
                 validator(_, value) {
                   if (!value || getFieldValue("password") === value) {
@@ -145,14 +137,12 @@ export function SignInPage(){
                   createUser(form.getFieldsValue());
                 }}
               >
-                Submit
+                Sign Up
               </Button>
               <Button
                 type="default"
                 htmlType="button"
-                onClick={(e) => {
-                  nav("/login", { replace: true });
-                }}
+                onClick={()=>nav("/login", { replace: true })}
               >
                 Login
               </Button>

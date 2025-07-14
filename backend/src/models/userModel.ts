@@ -22,7 +22,12 @@ export class UserInfo {
     }
 
     public static async findUser(email: string){
-        const user = await UserInfo.model.findOne({email}).select({name: 1, candidateType:1, email: 1, password: 1}).lean()
+        const user = await UserInfo.model.findOne({email}).select({name: 1, candidateType:1, email: 1, password: 1, userId: 1}).lean()
+        return user;
+    }
+
+    public static async findUsers(userId: string[]){
+        const user = await UserInfo.model.find({userId: userId}).select({name: 1, candidateType:1, email: 1, userId: 1 }).lean()
         return user;
     }
 

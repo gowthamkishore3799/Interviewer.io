@@ -17,7 +17,7 @@ async function validateUser(userName: string, password: string){
     }
 
     const sessionId = uuidv4();
-    return {session: sessionId,  user: {name: user.name, email: user.email, candidateType: user.candidateType}};
+    return {session: sessionId,  user: {name: user.name, email: user.email, candidateType: user.candidateType, userId: user.userId}};
 }
 
 async function createUser(name: string, email: string, password: string, candidateType: string){
@@ -32,7 +32,7 @@ async function createUser(name: string, email: string, password: string, candida
         userId,
     })
     const sessionId = uuidv4();
-    return sessionId;
+    return {sessionId};
 }
 
 

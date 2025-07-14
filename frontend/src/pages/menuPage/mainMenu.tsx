@@ -1,0 +1,92 @@
+import { FormOutlined, HomeFilled, PlusCircleOutlined } from "@ant-design/icons/lib/icons";
+import { Image, Layout, Menu } from "antd";
+import Sider from "antd/es/layout/Sider";
+import { Content } from "antd/es/layout/layout";
+import { useEffect, useState } from "react";
+import { SiGooglemeet } from "react-icons/si";
+import { Outlet, useNavigate } from "react-router";
+import { ROUTE_PATH } from "../../constants";
+import { useAuth } from "../../context/AuthRouter";
+
+export function MenuPage() {
+
+  const nav = useNavigate();
+  const {user} = useAuth();
+  const [menu, setMenu] = useState([{
+    key: `home`,
+    icon: <HomeFilled />,
+    label: `Home`,
+  }])
+
+  useEffect(() => {
+    const candidateMenu = [
+      {
+        key: "appliedJobs",
+        icon: <FormOutlined />,
+        label: "Applied Jobs",
+      },
+      {
+        key: "Interview",
+        icon: <SiGooglemeet />,
+        label: "Interview",
+      },
+    ];
+
+    const recruiterMenu = [
+      {
+        key: "add",
+        icon: <PlusCircleOutlined />,
+        label: "Add Job",
+      },
+    ];
+
+    const menuToAdd =
+      user?.candidateType === "Candidate" ? candidateMenu : recruiterMenu;
+
+    setMenu((prevMenu) => {
+      return [...prevMenu, ...menuToAdd];
+    });
+  }, []);
+
+
+  
+  return (
+    <>
+      <Layout className="h-full">
+        <Sider
+          style={{
+            overflow: "auto",
+            height: "100vh",
+            position: "sticky",
+            insetInlineStart: 0,
+            bottom: 0,
+            top: 0,
+          }}
+        >
+          <div className="demo-logo-vertical" />
+          <div className="flex gap-4 m-4 items-center justify-center border bg-gray-750">
+            <Image src="https://picsum.photos/50" className="rounded-xl"/>
+            <span className="text-red-500 text-white ">Interviewer.io</span>
+          </div>
+          <Menu
+            theme="dark"
+            defaultSelectedKeys={["home"]}
+            mode="inline"
+            items={menu}
+            className="m-40"
+            onClick={(e)=>{
+              nav(ROUTE_PATH[e.key])
+            }}
+          />
+        </Sider>
+        <Layout>
+          <Content>
+            <div className="h-full p-10 border-2 border-gray-500 bg-gray-100">
+              <Outlet/>
+            </div>
+          </Content>
+        </Layout>
+      </Layout>
+    </>
+  );
+}

@@ -1,9 +1,9 @@
 import { useLocation } from "react-router";
-import LoginPage from "./Login";
-import { SignInPage } from "./SignIn";
+import LoginPage from "./login";
+import { SignInPage } from "./signIn";
 
 
-export function SSOPage(){
+export default function SSOPage(){
     const {pathname} = useLocation();
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
