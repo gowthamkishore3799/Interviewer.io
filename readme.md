@@ -90,6 +90,12 @@ npm run dev
 Start frontend server
 cd /frontend
 npm run dev
+```
+
+## Demo
+
+Watch the demo here: [Click to watch the video](https://www.loom.com/share/your-loom-video-id)
+
 
 WIP => Docker Image build
 
@@ -99,9 +105,6 @@ MIT © Gowtham Kishore
 
 
 
-## Demo
-
-[🎥 Click here to watch the Loom demo](https://www.loom.com/share/your-loom-video-id)
 
 📬 Contact
 For feedback, ideas, or collaboration:
