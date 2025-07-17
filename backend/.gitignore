@@ -1,4 +1,7 @@
 *.pdf
 *.video
 *.webm
+
+node_modules/
+dist/
 .env
