@@ -97,8 +97,11 @@ WIP => Docker Image build
 🛡️ License
 MIT © Gowtham Kishore
 
-🤝 Contributing
-Pull requests are welcome! For major changes, please open an issue first to discuss what you’d like to change.
+
+
+## Demo
+
+[🎥 Click here to watch the Loom demo](https://www.loom.com/share/your-loom-video-id)
 
 📬 Contact
 For feedback, ideas, or collaboration:
