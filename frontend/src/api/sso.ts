@@ -5,7 +5,8 @@ export async function ssoLogin(email: string, password: string){
     return await fetch(SSO_URL + "/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({email, password})
+        body: JSON.stringify({email, password}),
+        credentials: "include"
     })
 }
 
@@ -13,6 +14,6 @@ export async function signUp(name: string, email: string, password: string, cand
     return await fetch(SSO_URL + "/sign-up", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({email, password, name, candidateType})
+        body: JSON.stringify({email, password, name, candidateType}),
     })
 }

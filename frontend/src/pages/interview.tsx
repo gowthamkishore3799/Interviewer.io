@@ -25,8 +25,6 @@ export default function InterviewUI() {
 
   const speakingRef = useRef<INTERVIEW_PROCESSING_STATUS>(INTERVIEW_PROCESSING_STATUS.THINKING);
   const [speakingStatus, setSpeakingStatus] = useState<INTERVIEW_PROCESSING_STATUS>(INTERVIEW_PROCESSING_STATUS.THINKING);
-  const silenceTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-const audioChunksRef = useRef<Float32Array[]>([]); // Accumulate VAD chunks
 
   
   const { user } = useAuth();
@@ -125,7 +123,7 @@ useEffect(() => {
         console.log("Speech detected...");
       },
       onSpeechEnd: async (audioArray: Float32Array) => {
-        console.log("Speech end");
+        console.log("Speech end", audioArray);
       },
       onVADMisfire: () => {
         console.log("Misfire of Speech End");

@@ -72,7 +72,7 @@ const getJobs =  async () => {
                   </Tag>
                 </div>
                 <div className="w-full text-center">
-                  <Button type="primary" className="w-full" disabled={element?.applied}>
+                  <Button type="primary" className="w-full" disabled={element?.applied} key={element.jobId}>
                     {candidateType == CANDIDATE_TYPE.CANDIDATE ? (element?.applied ? "Applied": "Apply") : "View"}
                   </Button>
                 </div>

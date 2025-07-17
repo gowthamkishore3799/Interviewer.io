@@ -19,3 +19,9 @@ export interface ScoreComponent{
   explanation: string;
   score: string
 }
+
+export interface CancelInterviewModalProps {
+  visible: boolean;
+  onClose: () => void;
+  onConfirm: () => void;
+}

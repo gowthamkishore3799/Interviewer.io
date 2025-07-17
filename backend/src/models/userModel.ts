@@ -34,6 +34,7 @@ export class UserInfo {
 
     public static async createUser({email, password, name, userId, candidateType}: UserData){
         const User = UserInfo.model;
+        console.log(email, name, password)
 
         let user = new User({email, password, name, userId, candidateType});
         await user.save()

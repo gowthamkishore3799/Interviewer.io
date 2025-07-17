@@ -1,6 +1,6 @@
 import { Button, Card, Progress, Tabs, Typography } from "antd";
 import { useState } from "react";
-import { ROOT_URL } from "../../constants";
+import { INTERVIEW_TRANSCRIPT } from "../../constants";
 import type { KeyValue } from "../../interface/application.types";
 
 const { Paragraph, Title } = Typography;
@@ -83,7 +83,7 @@ export function UserReport({
         {showVideo && interviewMetaData && (
           <video
             controls
-            src={`${ROOT_URL}/transcript/${interviewMetaData}`}
+            src={`${INTERVIEW_TRANSCRIPT}${interviewMetaData}`}
             style={{ marginTop: 16, width: "100%", maxHeight: "500px" }}
           />
         )}

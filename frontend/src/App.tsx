@@ -1,5 +1,4 @@
 import { BrowserRouter, Route, Routes } from "react-router";
-import TrailBox from "./Trail";
 import { AuthProvider } from "./context/AuthRouter";
 import { LoadingRouter } from "./context/LoadingRouter";
 import { Layout } from "./pages/Layout";
@@ -26,7 +25,6 @@ function App() {
             <Route path="/interview" element={<Interview/>}/>
           </Route>
           <Route path ="/interview/:interviewId" element={<InterviewUI2/>}/>
-          <Route path="/trial" element={<TrailBox/>}/>
         </Routes>
       </AuthProvider>
       </LoadingRouter>

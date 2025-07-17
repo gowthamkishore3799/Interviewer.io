@@ -1,4 +1,4 @@
-import { Button, Card, Empty, List, Modal, Tag, Typography } from "antd";
+import { Button, Card, Empty, List, Modal, Tag, Typography, message } from "antd";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { createInterviewId, findAppliedJobs } from "../../api/jobs";
@@ -18,6 +18,7 @@ export default function AppliedJobsList() {
     const nav = useNavigate();
 
     const [modal, contextHolder] = Modal.useModal();
+    const [messageApi, ctxHolder] = message.useMessage();
 
     if(!user){
         return <GlobalLoader/>
@@ -58,6 +59,10 @@ export default function AppliedJobsList() {
         countDown(data.interviewId)
       } catch(e){
         console.log(e, "error")
+        messageApi.error({
+          content: "Failed to create interview",
+          duration: 4
+        })
       }
       
     }
@@ -67,7 +72,8 @@ export default function AppliedJobsList() {
     
         const instance = modal.success({
           title: 'Good Luck!',
-          content: `Your interview will begin in  ${secondsToGo} second.`,
+          content: `Your interview will begin in ${secondsToGo} second.`,
+          okButtonProps: { style: { display: 'none' } }
         });
     
         const timer = setInterval(() => {
@@ -88,6 +94,7 @@ export default function AppliedJobsList() {
   return (
     <>
    {contextHolder}
+   {ctxHolder}
     <Card
       title={<Title level={4}>Your Job Applications</Title>}
       className="shadow-md"
@@ -107,8 +114,8 @@ export default function AppliedJobsList() {
                 <div className="flex flex-row sm:flex-row sm:items-center sm:justify-between">
                   <AntText strong>{item.title}</AntText>
                   <div>
-                  <Tag color={INTERVIEW_STATUS_COLOR_CODES[item.status] || INTERVIEW_STATUS_COLOR_CODES[INTERVIEW_STATUS.INTERVIEW_PENDING] }>
-                    {item?.status?.toUpperCase()}
+                  <Tag color={INTERVIEW_STATUS_COLOR_CODES[item.status].color || INTERVIEW_STATUS_COLOR_CODES[INTERVIEW_STATUS.INTERVIEW_PENDING].color }>
+                    {INTERVIEW_STATUS_COLOR_CODES[item.status].label}
                   </Tag>
                   {item.status == INTERVIEW_STATUS.INTERVIEW_PENDING && (
                     <Button type="primary" onClick={()=> {

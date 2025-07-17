@@ -9,7 +9,7 @@ const router = express.Router()
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-      const folder = req.body.folder || file.fieldname || "others"; // fallback
+      const folder = "video"; // fallback
       const uploadPath = path.join(__dirname, "../../uploads", folder);
   
       // Create folder if it doesn't exist

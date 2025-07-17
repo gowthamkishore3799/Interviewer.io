@@ -1,11 +1,12 @@
 import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
 import cors from "cors";
 import 'dotenv/config';
-import express from 'express';
-import session from 'express-session';
+import express, { NextFunction, Request, Response } from 'express';
 import fs from "fs";
 import path from 'path';
 import { LLM } from './ai/openai';
+import RedisSingleton from './database/redis';
 import { Database } from './models';
 import interviewRouter from "./routes/interview";
 import jobsRouter from './routes/jobsRouter';
@@ -14,27 +15,46 @@ import ssoRouter from "./routes/ssoRouter";
 
 const app = express();
 
+interface AuthedRequest extends Request {
+  cookies: { [key: string]: string };
+  user?: any;
+}
+
 Database.init();
 LLM.init();
 
-app.use(cors())
+app.use(cors({
+  origin: "http://localhost:5173",
+  credentials: true
+}))
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json({ limit: "50mb"}))
-
-app.use(session({
-    secret: process.env.SESSION_PASSWORD as string,
-    saveUninitialized: false,
-    resave: true,
-    cookie:{
-        maxAge: 60*60*1000, //1hour
-        httpOnly: true,
-        secure: true,
-    }
-}))
+app.use(cookieParser());
 
 
 app.use("/v1/sso", ssoRouter);
+
+async function requireAuth(req:AuthedRequest, res: Response, next: NextFunction){
+  const sessionId = req.cookies.session;
+  if (!sessionId) {
+    return res.status(401).json({ error: "Not authenticated" });
+  }
+
+  try{
+    const session = await RedisSingleton.getKey(sessionId);
+    if(!session){
+      throw new Error("Error in finding session")
+    }
+    req.user = JSON.parse(session);
+    next();
+  } catch(e){
+      return res.status(401).json({ error: "Session expired or invalid" });
+  }
+}
+
+app.use(requireAuth)
+
 app.use("/v1/jobs", jobsRouter);
 app.use("/v1/interview", interviewRouter)
 
@@ -45,6 +65,7 @@ const VIDEO_DIR = path.join(__dirname, "../uploads/video")
 app.get("/resume/:resume", async(req,res)=>{
     const fileName = path.basename(req.params.resume); // prevents path traversal
     const filePath = path.join(RESUME_DIR, req.params.resume);
+    console.log(fileName, "File nme")
     if (!fs.existsSync(filePath)) {
         return res.status(404).send("File not found");
     }
@@ -99,3 +120,4 @@ app.get("/transcript/:transcript", (req, res) => {
 app.listen(process.env.PORT, ()=>{
     console.log("Listening to port", process.env.PORT)
 })
+

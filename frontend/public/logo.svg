@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="100" viewBox="0 0 600 200">
+  <!-- Background -->
+  <rect width="100%" height="100%" fill="#ffffff"></rect>
+  
+  <!-- Speech Bubble Icon -->
+  <g transform="translate(20,40)">
+    <rect x="0" y="0" rx="15" ry="15" width="80" height="80" fill="#1d4ed8"></rect>
+    <path d="M20 60 q20 25 40 0" fill="#1d4ed8"></path>
+    <!-- Person Icon -->
+    <circle cx="40" cy="30" r="12" fill="white"></circle>
+    <path d="M25 60 q15 -20 30 0" fill="white"></path>
+  </g>
+
+  <!-- Text -->
+  <text x="120" y="80" font-family="Arial, Helvetica, sans-serif" font-size="40" fill="#111111">interviewer.io</text>
+</svg>

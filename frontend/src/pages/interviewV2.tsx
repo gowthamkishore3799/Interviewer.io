@@ -1,6 +1,6 @@
 import { XOutlined } from "@ant-design/icons";
 import { useMicVAD, utils } from "@ricky0123/vad-react";
-import { Button } from "antd";
+import { Button, message } from "antd";
 import { debounce } from 'lodash';
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
@@ -12,6 +12,7 @@ export default function InterviewUI2() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const [messageApi, contextHolder] = message.useMessage();
   
   const interviewId = location.pathname.split("/")[2];
   
@@ -83,7 +84,7 @@ export default function InterviewUI2() {
       if (!isAiSpeakingRef.current) {
         const wavBuffer = utils.encodeWAV(audioArray)
         const base64 = utils.arrayBufferToBase64(wavBuffer)
-        // safeHandleUserResponse("", base64)
+        safeHandleUserResponse("", base64)
       }
     },
     onVADMisfire: () => {
@@ -100,14 +101,9 @@ export default function InterviewUI2() {
     utterance.volume = 1;
 
     const voices = window.speechSynthesis.getVoices();
-    // utterance.voice = voices.find((v) => v.lang === "en-US") || null;
+    utterance.voice = voices.find((v) => v.lang === "en-US") || null;
 
-    const googleVoice = voices.find(
-      (v) => v.name === "Google US English" || v.name.includes("Google") && v.lang === "en-US" 
-    );
-    console.log(voices)
-  
-    utterance.voice = googleVoice || voices.find(v => v.lang === "en-US") || null;
+
     
     utterance.onstart = () => {
       if (micRef.current) {
@@ -135,15 +131,11 @@ export default function InterviewUI2() {
     speechSynthesisRef.current = utterance;
     window.speechSynthesis.speak(utterance);
   }, [updateSpeakingStatus]);
-
-  // Initialize VAD at the top level
   
-  // Store mic instance in ref to avoid recreating
   useEffect(() => {
     micRef.current = mic;
   }, [mic]);
 
-  // Start video recording
   const startRecording = useCallback(() => {
     if (!streamRef.current || mediaRecorderRef.current?.state === "recording") return;
 
@@ -166,7 +158,6 @@ export default function InterviewUI2() {
     mediaRecorderRef.current = recorder;
   }, []);
 
-  // Upload recorded video
   const uploadBlobToServer = useCallback(async (blob: Blob) => {
     if (!user || !interviewId) return;
 
@@ -182,7 +173,6 @@ export default function InterviewUI2() {
     }
   }, [user, interviewId]);
 
-  // Initialize media devices
   const initializeMedia = useCallback(async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
@@ -202,7 +192,6 @@ export default function InterviewUI2() {
         videoRef.current.play();
       }
 
-      // Set up audio visualization
       const audioCtx = new window.AudioContext();
       audioContextRef.current = audioCtx;
 
@@ -229,28 +218,24 @@ export default function InterviewUI2() {
     }
   }, [startRecording]);
 
-  // Cleanup function
   const cleanup = useCallback(() => {
-    // Cancel speech synthesis
     if (speechSynthesisRef.current) {
       window.speechSynthesis.cancel();
       speechSynthesisRef.current = null;
     }
     
-    // Stop video
+
     if (videoRef.current) {
       videoRef.current.pause();
       videoRef.current.srcObject = null;
       videoRef.current.load();
     }
     
-    // Stop recording
     if (mediaRecorderRef.current) {
       mediaRecorderRef.current.stop();
       mediaRecorderRef.current = null;
     }
     
-    // Stop media stream
     if (streamRef.current) {
       streamRef.current.getTracks().forEach(track => {
         console.log(`Stopping ${track.kind} track:`, track.label);
@@ -259,7 +244,6 @@ export default function InterviewUI2() {
       streamRef.current = null;
     }
     
-    // Close audio context
     if (audioContextRef.current) {
       try {
         audioContextRef.current.close();
@@ -269,7 +253,6 @@ export default function InterviewUI2() {
       audioContextRef.current = null;
     }
     
-    // Cancel animation frame
     if (volumeAnimationRef.current) {
       cancelAnimationFrame(volumeAnimationRef.current);
       volumeAnimationRef.current = null;
@@ -279,58 +262,79 @@ export default function InterviewUI2() {
     console.log("Cleanup complete");
   }, []);
 
-  // Handle end call
   const handleEndCall = useCallback(() => {
     cleanup();
     setTimeout(() => {
       navigate("/");
-    }, 100);
+    }, 1000);
   }, [cleanup, navigate]);
 
-  // End interview
-  const endInterview = useCallback(() => {
+  const endInterview = ()=> {
+    messageApi.open({
+      type: 'warning',
+      content: 'The interview has been cancelled. Your responses so far may be recorded for internal review. We’re processing your interview progress and will redirect you to the main menu shortly',
+      duration: 5
+    });
     cleanup();
     safeHandleUserResponse("End the interview");
-  }, [cleanup, safeHandleUserResponse]);
+  };
 
-  // Initialize on mount
   useEffect(() => {
     initializeMedia();
     safeHandleUserResponse("Lets start");
     
-    // Cleanup on unmount
     return cleanup;
   }, [initializeMedia, safeHandleUserResponse, cleanup]);
 
   return (
     <div className="relative w-screen h-screen bg-[#202124] overflow-hidden flex flex-col">
+      {contextHolder}
       <div className="bg-[#404040] m-[2%] h-[90%]">
-        {/* Volume visualization circle */}
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-          <div
-            className={`rounded-full transition-all duration-100 ease-linear ${
-              speakingStatus === INTERVIEW_PROCESSING_STATUS.LISTENING
-                ? "bg-green-500"
-                : speakingStatus === INTERVIEW_PROCESSING_STATUS.SPEAKING
-                ? "bg-blue-500"
-                : "bg-purple-500"
-            }`}
-            style={{
-              width: `${100 + volume}px`,
-              height: `${100 + volume}px`,
-              opacity: 0.9,
-              boxShadow: `0 0 ${100 + volume}px ${
-                speakingStatus === INTERVIEW_PROCESSING_STATUS.LISTENING
-                  ? "rgba(34, 197, 94, 0.6)"
-                  : speakingStatus === INTERVIEW_PROCESSING_STATUS.SPEAKING
-                  ? "rgba(59, 130, 246, 0.6)"
-                  : "rgba(168, 85, 247, 0.6)"
-              }`,
-            }}
-          >
-            {STATUS_LABEL_MAP[speakingStatus]}
-          </div>
-        </div>
+        <div className="fixed inset-0 flex items-center justify-center ">
+  {/* Outer ring */}
+  <div
+    className="absolute rounded-full pointer-events-none transition-transform duration-100 ease-out"
+    style={{
+      width: `${120 + volume * 80}px`,
+      height: `${120 + volume * 80}px`,
+      backgroundColor:
+        speakingStatus === INTERVIEW_PROCESSING_STATUS.LISTENING
+          ? "rgba(34, 197, 94, 0.3)" // green
+          : speakingStatus === INTERVIEW_PROCESSING_STATUS.SPEAKING
+          ? "rgba(59, 130, 246, 0.3)" // blue
+          : "rgba(168, 85, 247, 0.3)", // purple
+      boxShadow: `0 0 ${20 + volume * 60}px ${
+        speakingStatus === INTERVIEW_PROCESSING_STATUS.LISTENING
+          ? "rgba(34, 197, 94, 0.6)"
+          : speakingStatus === INTERVIEW_PROCESSING_STATUS.SPEAKING
+          ? "rgba(59, 130, 246, 0.6)"
+          : "rgba(168, 85, 247, 0.6)"
+      }`,
+      transform: "translate(-50%, -50%)",
+      top: "50%",
+      left: "50%",
+      position: "absolute",
+    }}
+  />
+
+  {/* Inner core */}
+  <div
+    className={`relative z-10 rounded-full flex flex-col items-center justify-center text-white font-semibold text-center px-4 py-3 shadow-md ${
+      speakingStatus === INTERVIEW_PROCESSING_STATUS.LISTENING
+        ? "bg-green-300"
+        : speakingStatus === INTERVIEW_PROCESSING_STATUS.SPEAKING
+        ? "bg-blue-300"
+        : "bg-purple-300"
+    }`}
+    style={{
+      width: `${80 + volume * 20}px`,
+      height: `${80 + volume * 20}px`,
+      transition: "all 0.15s ease-out",
+    }}
+  >
+    {STATUS_LABEL_MAP[speakingStatus]}
+  </div>
+</div>
 
         {/* Video preview */}
         <div className="absolute bottom-0 right-0 border border-white rounded-lg overflow-hidden w-64 h-48 shadow-xl">
@@ -356,8 +360,9 @@ export default function InterviewUI2() {
           className="!bg-red-500 hover:!bg-red-600 !text-white !border-red-500"
           onClick={endInterview}
           size="large"
+          htmlType="button"
         >
-          <XOutlined /> End Call
+          <XOutlined onClick={endInterview}/> End Call
         </Button>
       </div>
     </div>

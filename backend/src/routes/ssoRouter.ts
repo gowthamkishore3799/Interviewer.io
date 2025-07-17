@@ -1,4 +1,5 @@
 import express from 'express';
+import RedisSingleton from '../database/redis';
 import { createUser, validateUser } from '../services/user';
 const router = express.Router();
 
@@ -13,7 +14,10 @@ router.post("/login", async (req, res)=>{
             throw({message: "Email or Password missing", email, password});
         }
         const {session, user } = await validateUser(email, password);
-        res.cookie('session', session);
+        let sessionKey = `session-${session}`;
+        console.log(sessionKey, "Set session...")
+        await RedisSingleton.setKey(sessionKey, JSON.stringify({userId: user.userId, email}))
+        res.cookie('session', sessionKey);
         return res.status(200).send({
             message: "User verified successfully",
             success: true,

@@ -1,5 +1,5 @@
 import { HomeFilled, PlusCircleOutlined } from "@ant-design/icons/lib/icons";
-import { Image, Layout, Menu } from "antd";
+import { Layout, Menu } from "antd";
 import Sider from "antd/es/layout/Sider";
 import { Content } from "antd/es/layout/layout";
 import { useEffect, useState } from "react";
@@ -49,10 +49,12 @@ export function MenuPage() {
     const menuToAdd =
       user?.candidateType === "Candidate" ? candidateMenu : recruiterMenu;
 
-    setMenu((prevMenu) => {
-      return [...prevMenu, ...menuToAdd];
-    });
-  }, []);
+      setMenu((prevMenu) => {
+        const existingKeys = new Set(prevMenu.map((item) => item.key));
+        const filteredNewItems = menuToAdd.filter((item) => !existingKeys.has(item.key));
+        return [...prevMenu, ...filteredNewItems];
+      });
+  }, [user?.candidateType]);
 
 
   
@@ -70,8 +72,7 @@ export function MenuPage() {
           }}
         >
           <div className="demo-logo-vertical" />
-          <div className="flex gap-4 m-4 items-center justify-center border bg-gray-750">
-            <Image src="https://picsum.photos/50" className="rounded-xl"/>
+          <div className="flex gap-4 m-4 items-center justify-center bg-gray-750">
             <span className="text-red-500 text-white ">Interviewer.io</span>
           </div>
           <Menu

@@ -4,6 +4,8 @@ export const SSO_URL = ROOT_URL + "/v1/sso"
 export const userDetailsKey = "USER_DETAILS"
 export const JOB_URL = ROOT_URL + "/v1/jobs"
 export const INTERVIEW_URL = ROOT_URL + "/v1/interview"
+export const RESUME_URL = ROOT_URL + "/resume/"
+export const INTERVIEW_TRANSCRIPT = ROOT_URL + "/transcript/"
 
 
 export enum JOB_ROLE_TYPE {
@@ -45,11 +47,24 @@ export enum INTERVIEW_STATUS {
     INTERVIEW_PROCESSING = "interview_processing"
 }
 
-export const INTERVIEW_STATUS_COLOR_CODES: Record<INTERVIEW_STATUS, string> = {
-    [INTERVIEW_STATUS.INTERVIEW_PENDING]: "orange",
-    [INTERVIEW_STATUS.INTERVIEW_COMPLETED]: "green",
-    [INTERVIEW_STATUS.INTERVIEW_PROCESSING]: "blue", // or another color
-  };
+export const INTERVIEW_STATUS_COLOR_CODES: Record<
+  INTERVIEW_STATUS,
+  { color: string; label: string }
+> = {
+  [INTERVIEW_STATUS.INTERVIEW_PENDING]: {
+    color: "orange",
+    label: "Interview Pending",
+  },
+  [INTERVIEW_STATUS.INTERVIEW_PROCESSING]: {
+    color: "blue",
+    label: "Interview Processing",
+  },
+  [INTERVIEW_STATUS.INTERVIEW_COMPLETED]: {
+    color: "green",
+    label: "Interview Completed",
+  },
+};
+  
 
 export interface Application{
         _id: string;

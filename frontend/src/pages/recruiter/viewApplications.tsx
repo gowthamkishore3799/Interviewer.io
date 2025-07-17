@@ -1,6 +1,6 @@
 import { Button, Drawer } from "antd";
 import { useState } from "react";
-import { ROOT_URL } from "../../constants";
+import { RESUME_URL } from "../../constants";
 import type { Application } from "../../interface/application.types";
 import { UserReport } from "./report";
 
@@ -70,7 +70,7 @@ export default function JobApplications({applications}: {applications: Applicati
                 height={"auto"}
               >
                 {selectedType == "Resume" && (<iframe
-                  src={ROOT_URL + "/" + element.resume}
+                  src={RESUME_URL + element.resume}
                   width="100%"
                   height="100%"
                   title="Resume Viewer"

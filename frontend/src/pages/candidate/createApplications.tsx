@@ -23,7 +23,6 @@ export default function ResumeUploader({jobId, userId}: {jobId: string, userId: 
     },
     onChange(info) {
       const { status } = info.file;
-      console.log("Selected file:", info.file);
       if (status === "done") {
         messageApi.success({
             content: `${info.file.name} uploaded successfully`

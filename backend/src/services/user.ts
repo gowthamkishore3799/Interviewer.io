@@ -24,7 +24,7 @@ async function createUser(name: string, email: string, password: string, candida
     const userId = uuidv4();
     const salt =await bcrypt.genSalt(HASHING_ROUNDS);
     const hashedPassword = await bcrypt.hash(password, salt);
-
+    console.log(name,email, candidateType)
     await UserInfo.createUser({email,
         password: hashedPassword,
         name,

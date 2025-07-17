@@ -40,6 +40,7 @@ export class LLM {
     const response = await LLM.client.responses.parse({
       model: "gpt-4o-2024-08-06",
       input: systemMessages,
+      temperature: 0.8,
       text: {
         format: zodTextFormat(outputFormat, format),
       },
