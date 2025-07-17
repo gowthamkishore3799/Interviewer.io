@@ -1,0 +1,42 @@
+
+services:
+  frontend:
+    build: ./frontend
+    container_name: interviewer_frontend
+    ports:
+      - "3010:3010"
+    depends_on:
+      - backend
+    volumes:
+      - ./frontend:/app
+    command: sh -c "node --version && npm --version && npm run dev"
+
+  backend:
+    build: ./backend
+    container_name: interviewer_backend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./uploads:/app/uploads
+    env_file:
+      - .env
+    depends_on:
+      - mongodb
+      - redis
+
+  mongodb:
+    image: mongo:6
+    container_name: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+  redis:
+    image: redis:7
+    container_name: redis
+    ports:
+      - "6379:6379"
+
+volumes:
+  mongo-data:
