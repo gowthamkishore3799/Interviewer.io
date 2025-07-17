@@ -1,19 +1,28 @@
 
 import express from 'express';
+import fs from 'fs';
 import multer from 'multer';
-import { createApplication, createJob, findApplication, findAppliedJobs, findJobs, getJob } from '../services/job';
+import path from 'path';
+import { createApplication, createJob, findApplication, findAppliedJobs, findInterview, findJobs, getJob } from '../services/job';
+import { prepareAtsScore } from '../services/resumeReport';
 
 const router = express.Router();
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-      cb(null, './uploads')
+      const folder = req.body.folder || file.fieldname || "others"; // fallback
+      const uploadPath = path.join(__dirname, "uploads", folder);
+  
+      // Create folder if it doesn't exist
+      fs.mkdirSync(uploadPath, { recursive: true });
+  
+      cb(null, uploadPath);
     },
     filename: function (req, file, cb) {
       const uniqueSuffix = Date.now() + '-' + file.originalname;
-      cb(null, file.fieldname + '-' + uniqueSuffix)
+      cb(null, file.fieldname + '-' + uniqueSuffix);
     }
-  })
+  });
   
 const upload = multer({ storage: storage})
 
@@ -105,17 +114,43 @@ router.get("/:jobId", async(req, res)=>{
     }
 })
 
+router.get("/user/:userId", async(req, res)=>{
+    try{
+
+        let {userId} = req.params;
+
+        if(!userId){
+            throw new Error("Error in creating application");
+        }
+        const interviews = await findInterview(userId)
+        return res.status(200).send({
+            message: "Job Application Found",
+            success: true,
+            interviews: interviews,
+
+        })
+    }catch(e){
+        console.log(e, "error in job interview")
+        return res.status(404).send({
+            message: "Failed to find interviews",
+            success: false
+        })
+    }
+})
+
 router.post("/apply", upload.single("resume"), async(req, res)=>{
     try{
 
         let {jobId, userId} = req.body;
 
-        if(!jobId || !userId){
+        if(!jobId || !userId || !req.file){
             throw new Error("Error in creating application");
         }
 
-        let filePath = req?.file?.filename || ""
-        await createApplication(jobId, userId, filePath)
+        let filePath = req.file.path;
+        let fileName = req.file.filename;
+        await createApplication(jobId, userId, fileName)
+        prepareAtsScore(jobId, userId, filePath)
         return res.status(200).send({
             message: "Successfully created job",
             success: true

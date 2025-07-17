@@ -3,6 +3,7 @@ export const ROOT_URL = "http://localhost:3000"
 export const SSO_URL = ROOT_URL + "/v1/sso"
 export const userDetailsKey = "USER_DETAILS"
 export const JOB_URL = ROOT_URL + "/v1/jobs"
+export const INTERVIEW_URL = ROOT_URL + "/v1/interview"
 
 
 export enum JOB_ROLE_TYPE {
@@ -28,10 +29,46 @@ export const JOB_ROLE = {
 
 export const ROUTE_PATH: {[key:string]: string} = {
     "home": "/",
-    "add" : "/add"
+    "add" : "/add",
+    "interview": "/interview"
 }
 
 export enum CANDIDATE_TYPE{
     RECRUITER = "Recruiter",
     CANDIDATE = "Candidate"
 }
+
+
+export enum INTERVIEW_STATUS {
+    INTERVIEW_PENDING = "interview_pending",
+    INTERVIEW_COMPLETED = "interview_completed",
+    INTERVIEW_PROCESSING = "interview_processing"
+}
+
+export const INTERVIEW_STATUS_COLOR_CODES: Record<INTERVIEW_STATUS, string> = {
+    [INTERVIEW_STATUS.INTERVIEW_PENDING]: "orange",
+    [INTERVIEW_STATUS.INTERVIEW_COMPLETED]: "green",
+    [INTERVIEW_STATUS.INTERVIEW_PROCESSING]: "blue", // or another color
+  };
+
+export interface Application{
+        _id: string;
+        jobId: string;
+        userId: string;
+        status: INTERVIEW_STATUS;
+        title: string;
+        roleType: string;
+        orgName: string;
+}
+
+export enum INTERVIEW_PROCESSING_STATUS{
+    THINKING = "thinking",
+    SPEAKING = "speaking",
+    LISTENING = "listening"
+}
+
+export const STATUS_LABEL_MAP: Record<INTERVIEW_PROCESSING_STATUS, string> = {
+    [INTERVIEW_PROCESSING_STATUS.THINKING]: "🧠 AI Thinking",
+    [INTERVIEW_PROCESSING_STATUS.SPEAKING]: "🤖 AI Speaking",
+    [INTERVIEW_PROCESSING_STATUS.LISTENING]: "🎧 User Speaking",
+  };

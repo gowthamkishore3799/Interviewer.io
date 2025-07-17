@@ -1,39 +1,24 @@
-import mongoose, { Connection } from 'mongoose';
+import mongoose, { Connection } from "mongoose";
 
-export class Mongodb {
-  static #instance: Mongodb;
-  private connection!: Connection;
+export class MongoSingleton {
+  private static connection: Connection | null = null;
 
+  /** Hide the constructor to prevent `new MongoSingleton()` */
   private constructor() {}
 
-  private static async mongodbConnect(): Promise<Connection> {
-    try {
-      const dbHost = process.env.DB_HOST as string;
-      if (!dbHost) {
-        throw new Error('DB_HOST is not defined in environment variables.');
-      }
-
-      const conn = await mongoose.connect(dbHost);
-      console.log(`✅ MongoDB connected at ${conn.connection.host}`);
-      return conn.connection;
-    } catch (e) {
-      console.error('❌ Error in creating MongoDB connection:', e);
-      throw e;
-    }
-  }
-
-  public static async getInstance(): Promise<void> {
-    if (!Mongodb.#instance) {
-      Mongodb.#instance = new Mongodb();
+  /** Get (or lazily create) the shared MongoDB connection */
+  static async getConnection(): Promise<Connection> {
+    if (MongoSingleton.connection && MongoSingleton.connection.readyState === 1) {
+      return MongoSingleton.connection;
     }
 
-    if (
-      Mongodb.#instance.connection &&
-      Mongodb.#instance.connection.readyState === 1
-    ) {
-      return;
-    }
+    const dbHost = process.env.DB_HOST;
+    if (!dbHost) throw new Error("DB_HOST is not defined in env vars");
 
-    Mongodb.#instance.connection = await Mongodb.mongodbConnect();
+    const conn = await mongoose.connect(dbHost);
+    console.log(`✅ MongoDB connected at ${conn.connection.host}`);
+
+    MongoSingleton.connection = conn.connection;
+    return MongoSingleton.connection;
   }
 }

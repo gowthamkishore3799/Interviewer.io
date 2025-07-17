@@ -1,11 +1,14 @@
 import { BrowserRouter, Route, Routes } from "react-router";
+import TrailBox from "./Trail";
 import { AuthProvider } from "./context/AuthRouter";
 import { LoadingRouter } from "./context/LoadingRouter";
 import { Layout } from "./pages/Layout";
-import AddJob from "./pages/menuPage/overview/addJob";
-import { Home } from "./pages/menuPage/overview/home";
-import ViewJob from "./pages/menuPage/overview/viewJob";
+import Interview from "./pages/candidate/interview";
+import { Home } from "./pages/home";
+import InterviewUI2 from "./pages/interviewV2";
+import AddJob from "./pages/recruiter/createJobPosting";
 import SSO from "./pages/sso/sso";
+import ViewJob from "./pages/viewJob";
 
 function App() {
   return (
@@ -20,7 +23,10 @@ function App() {
             <Route index element={<Home />} />
             <Route path="add" element={<AddJob />} />
             <Route path="job/:jobId" element={<ViewJob />} />
+            <Route path="/interview" element={<Interview/>}/>
           </Route>
+          <Route path ="/interview/:interviewId" element={<InterviewUI2/>}/>
+          <Route path="/trial" element={<TrailBox/>}/>
         </Routes>
       </AuthProvider>
       </LoadingRouter>

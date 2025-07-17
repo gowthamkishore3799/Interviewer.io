@@ -50,12 +50,33 @@ async function findApplication(jobId: string){
     const jobApplications = application.map((element) => {
         const applied = applications.find((a) => a.userId === element.userId);
         if (applied) {
-          return { ...element, resume: applied.resumeMetadata };
+          return { ...element, resume: applied.resumeMetadata, atsScore: applied.atsScore, status: applied.status, interviewMetaData: applied?.interviewMetaData || "", feedback: applied?.feedback || []};
         }
         return element;
       });
     return jobApplications;
 }
 
-export { createApplication, createJob, findApplication, findAppliedJobs, findJobs, getJob };
+async function findInterview(userId:string){
+    const applications = await ApplicationInfo.findApplicationByUserIdAndStatus(userId)
+
+
+    const jobIds = [];
+    for(let application of applications){
+        jobIds.push(application.jobId)
+    }
+
+    const jobs = await JobsModel.findJobsByIds(jobIds)
+
+    const response = applications.map((element)=>{
+        const applied = jobs.find((job) => job.jobId === element.jobId);
+        if (applied) {
+          return { ...element, title: applied.title, roleType: applied.roleType, orgName: applied.orgName };
+        }
+        return element;
+    })
+    return response;
+}
+
+export { createApplication, createJob, findApplication, findAppliedJobs, findInterview, findJobs, getJob };
 

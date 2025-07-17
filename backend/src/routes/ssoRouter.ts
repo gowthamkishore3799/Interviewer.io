@@ -8,8 +8,6 @@ router.post("/login", async (req, res)=>{
 
         let {email, password} = req.body;
 
-        console.log(email, password)
-
         
         if(!email || !password){
             throw({message: "Email or Password missing", email, password});

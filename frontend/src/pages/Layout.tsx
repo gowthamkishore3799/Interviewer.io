@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router";
 import { GlobalLoader } from "../components/LoadingPage";
 import { useAuth } from "../context/AuthRouter";
-import { MenuPage } from "./menuPage/mainMenu";
+import { MenuPage } from "./mainMenu";
 
 export function Layout() {
   const nav = useNavigate();
@@ -14,8 +14,8 @@ export function Layout() {
     }
   }, []);
 
-  if(!user){
-    return (<GlobalLoader/>)
+  if (!user) {
+    return <GlobalLoader />;
   }
 
   return (

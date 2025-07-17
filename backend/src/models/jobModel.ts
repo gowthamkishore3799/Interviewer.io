@@ -29,6 +29,11 @@ export class JobsModel {
     return jobs;
   }
 
+  public static async findJobsByIds(jobIds: string[]){
+    const jobs = await JobsModel.model.find({jobId: jobIds}).select({orgName: 1, role:1, title: 1, roleType: 1, jobId: 1 }).lean();
+    return jobs;
+  }
+
 
   public static async findJob(jobId:string){
     const jobs = await JobsModel.model.findOne({jobId}).lean();
