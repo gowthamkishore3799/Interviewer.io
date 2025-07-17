@@ -49,7 +49,7 @@ export class LLM {
     return response.output_parsed || {};
   }
 
-  public static async sendToWhisper(audioBase64: string): Promise<string> {
+  public static async sendToWhisper(audioBase64: string): Promise<OpenAI.Audio.Transcriptions.Transcription> {
     if (!LLM.client) LLM.init();
 
     try {
@@ -70,8 +70,7 @@ export class LLM {
           model: "whisper-1",
         });
 
-        console.log(transcription)
-        return transcription.text;
+        return transcription as OpenAI.Audio.Transcriptions.Transcription;
       } finally {
         fs.unlinkSync(tempPath);
       }

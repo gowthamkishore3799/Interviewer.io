@@ -276,7 +276,7 @@ export default function InterviewUI2() {
       duration: 5
     });
     cleanup();
-    safeHandleUserResponse("End the interview");
+    handleUserResponse("End the interview");
   };
 
   useEffect(() => {
@@ -295,15 +295,15 @@ export default function InterviewUI2() {
   <div
     className="absolute rounded-full pointer-events-none transition-transform duration-100 ease-out"
     style={{
-      width: `${120 + volume * 80}px`,
-      height: `${120 + volume * 80}px`,
+      width: `${120 + volume}px`,
+      height: `${120 + volume}px`,
       backgroundColor:
         speakingStatus === INTERVIEW_PROCESSING_STATUS.LISTENING
           ? "rgba(34, 197, 94, 0.3)" // green
           : speakingStatus === INTERVIEW_PROCESSING_STATUS.SPEAKING
           ? "rgba(59, 130, 246, 0.3)" // blue
           : "rgba(168, 85, 247, 0.3)", // purple
-      boxShadow: `0 0 ${20 + volume * 60}px ${
+      boxShadow: `0 0 ${20 + volume}px ${
         speakingStatus === INTERVIEW_PROCESSING_STATUS.LISTENING
           ? "rgba(34, 197, 94, 0.6)"
           : speakingStatus === INTERVIEW_PROCESSING_STATUS.SPEAKING

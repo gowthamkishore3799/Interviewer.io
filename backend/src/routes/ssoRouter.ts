@@ -15,7 +15,6 @@ router.post("/login", async (req, res)=>{
         }
         const {session, user } = await validateUser(email, password);
         let sessionKey = `session-${session}`;
-        console.log(sessionKey, "Set session...")
         await RedisSingleton.setKey(sessionKey, JSON.stringify({userId: user.userId, email}))
         res.cookie('session', sessionKey);
         return res.status(200).send({

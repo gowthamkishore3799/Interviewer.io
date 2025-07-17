@@ -98,7 +98,7 @@ export function UserReport({
     children: <ATSTab analysis={analysis}/>
   }]
 
-  if(interviewReport){
+  if(interviewReport && Object.keys(interviewReport).length>0){
     items.push({
       key: "interview",
       label: "Interview Report",

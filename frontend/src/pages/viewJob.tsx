@@ -58,11 +58,13 @@ export default function ViewJob(){
     const isRecruiter = getUserDetails()?.candidateType == CANDIDATE_TYPE.RECRUITER;
 
     if(isRecruiter){
+      if(applications && applications.length>0){
         items.push({
             label: "Applications",
             key: "Applications",
             children: <JobApplications applications={applications} />
         })
+      }
     } else{
 
       if (!applications || applications.length <= 0) {

@@ -18,6 +18,8 @@ export class UserInfo {
             { timestamps: true }
         );
 
+        schema.index({email:1})
+
         this.model = mongoose.model<UserData>('User', schema);
     }
 

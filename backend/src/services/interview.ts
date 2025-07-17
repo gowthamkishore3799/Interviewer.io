@@ -70,7 +70,7 @@ export const handleInterview = async (userId: string, interviewId: string, userr
         }
         messages.push({
             role: ROLE_TYPE.USER,
-            content: convo
+            content: convo.text
         })
     } else{
         if(userresponse.length >0){

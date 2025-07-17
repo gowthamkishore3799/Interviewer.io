@@ -19,6 +19,7 @@ export default function AppliedJobsList() {
 
     const [modal, contextHolder] = Modal.useModal();
     const [messageApi, ctxHolder] = message.useMessage();
+    const [isLoading, setIsLoading] = useState(true)
 
     if(!user){
         return <GlobalLoader/>
@@ -40,6 +41,7 @@ export default function AppliedJobsList() {
             const data = await response.json();
             const interviews: Application[] = data.interviews;
             setApplications(interviews);
+            setIsLoading(false);
         }catch(e){
             console.log(e, "Error in fetching jobs")
         }
@@ -95,6 +97,7 @@ export default function AppliedJobsList() {
     <>
    {contextHolder}
    {ctxHolder}
+   {isLoading ? <GlobalLoader/> :
     <Card
       title={<Title level={4}>Your Job Applications</Title>}
       className="shadow-md"
@@ -136,6 +139,7 @@ export default function AppliedJobsList() {
         )}
       />
     </Card>
+}
     </>
   );
 }

@@ -41,13 +41,17 @@ export default function JobApplications({applications}: {applications: Applicati
               </div>
               <div className="p-4 flex flex-col gap-4 right">
                 <div className="w-full text-center">
-                  <Button
-                    type="primary"
-                    className="w-full"
-                    onClick={()=>{showDrawer("Report")}}
-                  >
-                    View Report
-                  </Button>
+                  {element?.atsScore && (
+                    <Button
+                      type="primary"
+                      className="w-full"
+                      onClick={() => {
+                        showDrawer("Report");
+                      }}
+                    >
+                      View Report
+                    </Button>
+                  )}
                 </div>
               </div>
               <div className="p-4 flex flex-col gap-4 right">
@@ -55,7 +59,7 @@ export default function JobApplications({applications}: {applications: Applicati
                   <Button
                     type="primary"
                     className="w-full"
-                    onClick={()=>showDrawer("Resume")}
+                    onClick={() => showDrawer("Resume")}
                   >
                     View Resume
                   </Button>
@@ -69,14 +73,22 @@ export default function JobApplications({applications}: {applications: Applicati
                 width={"50%"}
                 height={"auto"}
               >
-                {selectedType == "Resume" && (<iframe
-                  src={RESUME_URL + element.resume}
-                  width="100%"
-                  height="100%"
-                  title="Resume Viewer"
-                  style={{ border: "1px solid #ccc" }}
-                />)}
-                {selectedType == "Report" && <UserReport analysis={element.atsScore} interviewReport={element.feedback} interviewMetaData={element.interviewMetaData}/>}
+                {selectedType == "Resume" && (
+                  <iframe
+                    src={RESUME_URL + element.resume}
+                    width="100%"
+                    height="100%"
+                    title="Resume Viewer"
+                    style={{ border: "1px solid #ccc" }}
+                  />
+                )}
+                {selectedType == "Report" && element.atsScore && (
+                  <UserReport
+                    analysis={element.atsScore}
+                    interviewReport={element.feedback}
+                    interviewMetaData={element.interviewMetaData}
+                  />
+                )}
               </Drawer>
             </div>
           ))}
