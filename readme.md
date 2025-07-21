@@ -92,10 +92,6 @@ cd /frontend
 npm run dev
 ```
 
-## Demo
-
-Watch the demo here: [Click to watch the video](https://www.loom.com/share/9d235bdc2d894787817723a9c4ac693d)
-
 
 WIP => Docker Image build
 
