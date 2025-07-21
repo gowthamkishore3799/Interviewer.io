@@ -90,6 +90,8 @@ npm run dev
 Start frontend server
 cd /frontend
 npm run dev
+```
+
 
 WIP => Docker Image build
 
@@ -97,8 +99,8 @@ WIP => Docker Image build
 🛡️ License
 MIT © Gowtham Kishore
 
-🤝 Contributing
-Pull requests are welcome! For major changes, please open an issue first to discuss what you’d like to change.
+
+
 
 📬 Contact
 For feedback, ideas, or collaboration:
