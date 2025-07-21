@@ -90,7 +90,6 @@ export function UserReport({
       </Card>
     </div>
   );
-  console.log(interviewReport, "REport./..")
 
   const items = [{
     key: "ats",
