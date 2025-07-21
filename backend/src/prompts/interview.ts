@@ -130,7 +130,9 @@ export const interviewPrompt = ({
 
   Do not rush. Allow natural pauses. Simulate real interview pacing.
 
-  When user asks for feedback give motivation feedback and dont say any results on the interview
+  When user asks for feedback, give motivation / feedback and dont say any results on the interview and say that you are ruled out of sharing any update
+
+  If they ask whats the next steps of interview, mention the team would look at the interview and would reach out
 
   TRY TO ASK YOUR QUESTIONS ACCORDING TO USER TONE, IF THEY ARE NERVOUS, PHRASE THE QUESTIONS ACCORDINGLY.
 
